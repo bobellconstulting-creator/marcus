@@ -2,7 +2,7 @@
 """
 MARCUS — Digital Co-Founder
 Neuradex AI | Bo Bell
-Brain: Kimi K2.5 via Fireworks | Memory: mem0 + NVIDIA Embeddings | Interface: Telegram
+Brain: MiniMax M2.5 via NVIDIA NIM | Memory: mem0 + NVIDIA Embeddings | Interface: Telegram
 """
 
 # ─── IMPORTS ───────────────────────────────────────────────────────────────────
@@ -23,31 +23,31 @@ from telegram.ext import (
 from telegram.constants import ParseMode
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
-FIREWORKS_KEY  = os.getenv("FIREWORKS_KEY", "")
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "8667240819:AAHQds02Ecu8v-gjQg0Pq7pt1biLfYZCDd0")
-NVIDIA_KEY     = os.getenv("NVIDIA_KEY", "")
-GITHUB_TOKEN   = os.getenv("GITHUB_TOKEN", "")
-VERCEL_TOKEN   = os.getenv("VERCEL_TOKEN", "")
-TAVILY_KEY     = os.getenv("TAVILY_KEY", "")
-TEXTBELT_KEY   = os.getenv("TEXTBELT_KEY",   "L8GYNUVB5ECUVXBL2R6Q7AXH")
-GOOGLE_KEY     = os.getenv("GOOGLE_KEY",     "AIzaSyAIbE0QzzalM1iLPdbuIqt5X3b9xnS36XA")
-RESEND_KEY     = os.getenv("RESEND_KEY",     "re_8iHnPLMw_CS5vjoQxhfR2PkBVKm5qHpNB")
+NVIDIA_KEY     = os.getenv("NVIDIA_KEY",     "")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "")
+GITHUB_TOKEN   = os.getenv("GITHUB_TOKEN",   "")
+VERCEL_TOKEN   = os.getenv("VERCEL_TOKEN",   "")
+TAVILY_KEY     = os.getenv("TAVILY_KEY",     "")
+TEXTBELT_KEY   = os.getenv("TEXTBELT_KEY",   "")
+GOOGLE_KEY     = os.getenv("GOOGLE_KEY",     "")
+RESEND_KEY     = os.getenv("RESEND_KEY",     "")
 GMAIL_USER     = os.getenv("GMAIL_USER",     "bobellconstulting@gmail.com")
-GMAIL_PASS     = os.getenv("GMAIL_PASS",     "zkjnlkhoxglowqaz")
+GMAIL_PASS     = os.getenv("GMAIL_PASS",     "")
 BO_CHAT_ID     = int(os.getenv("BO_CHAT_ID", "7240677590"))
 
-MODEL   = "accounts/fireworks/models/kimi-k2p5"
+MODEL    = "minimaxai/minimax-m2.5"
+NVIDIA_BASE = "https://integrate.api.nvidia.com/v1"
 CT      = pytz.timezone("America/Chicago")
 
 # ─── PATHS ─────────────────────────────────────────────────────────────────────
-BASE          = Path("/root/neuradex/marcus")
+BASE          = Path("/tmp/neuradex/marcus")
 SOUL_F        = BASE / "SOUL.md"
 MEM_F         = BASE / "MEMORY.md"
 MARKET_F      = BASE / "MARKET.md"
 HIST_F        = BASE / "HISTORY.json"
 CHATID_F      = BASE / "bo_chat_id.txt"
 REMIND_F      = BASE / "reminders.json"
-MARCUS_MEM_DIR = Path("/root/marcus_memory")
+MARCUS_MEM_DIR = Path("/tmp/marcus_memory")
 BASE.mkdir(parents=True, exist_ok=True)
 MARCUS_MEM_DIR.mkdir(exist_ok=True)
 
@@ -56,7 +56,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
     handlers=[
-        logging.FileHandler("/root/marcus.log"),
+        logging.FileHandler("/tmp/marcus.log"),
         logging.StreamHandler()
     ]
 )
@@ -64,8 +64,8 @@ log = logging.getLogger("marcus")
 
 # ─── AI CLIENT ─────────────────────────────────────────────────────────────────
 oai = OpenAI(
-    api_key=FIREWORKS_KEY,
-    base_url="https://api.fireworks.ai/inference/v1"
+    api_key=NVIDIA_KEY,
+    base_url=NVIDIA_BASE
 )
 
 # ─── SEMANTIC MEMORY (mem0 + NVIDIA Embeddings) ────────────────────────────────
@@ -96,9 +96,9 @@ def init_semantic_memory():
             "llm": {
                 "provider": "openai",
                 "config": {
-                    "model": "accounts/fireworks/models/kimi-k2p5",
-                    "openai_base_url": "https://api.fireworks.ai/inference/v1",
-                    "api_key": FIREWORKS_KEY,
+                    "model": "minimaxai/minimax-m2.5",
+                    "openai_base_url": NVIDIA_BASE,
+                    "api_key": NVIDIA_KEY,
                     "temperature": 0.1,
                     "max_tokens": 1000
                 }
